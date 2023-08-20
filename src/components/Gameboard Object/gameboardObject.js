@@ -1,5 +1,3 @@
-import ship from "../Ship Object/shipObject";
-
 const gameboard = () => {
   const gameboardArr = [];
   const createGameboard = () => {
@@ -21,18 +19,19 @@ const gameboard = () => {
 
   const getGameBoardArray = () => gameboardArr;
 
-  const placeShip = (cordinate) => {
+  const placeShip = (cordinate, newShip) => {
     const board = getGameBoardArray();
     let square;
+    const ship = newShip.getLength();
     for (let i = 0; i < board.length; i++) {
       if (JSON.stringify(board[i].cord) === JSON.stringify(cordinate)) {
         square = board[i];
         if (square.isOccupied === false);
         square.isOccupied = true;
-        return square;
+        return { square, ship };
       }
     }
-    return square;
+    return { square, ship };
   };
 
   return { createGameboard, getGameBoardArray, placeShip };

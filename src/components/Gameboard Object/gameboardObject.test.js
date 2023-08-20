@@ -1,4 +1,5 @@
 import gameboard from "./gameboardObject";
+import ship from "../Ship Object/shipObject";
 
 const newGameboard = gameboard();
 newGameboard.createGameboard();
@@ -15,7 +16,8 @@ test("should create gameboard with a cordinate of [9,9]", () => {
 });
 
 test("should place ship at cord [0, 0]", () => {
+  const newShip = ship(3);
   const shipCords = [0, 0];
-  const shipPlacement = newGameboard.placeShip(shipCords);
-  expect(shipPlacement.isOccupied).toBe(true);
+  const shipPlacement = newGameboard.placeShip(shipCords, newShip);
+  expect(shipPlacement).toBe(true);
 });
