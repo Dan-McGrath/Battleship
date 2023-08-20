@@ -15,7 +15,7 @@ const ship = (length) => {
     }
     return sunk;
   };
-  return { hit, isSunk };
+  return { hit, isSunk, getLength };
 };
 
 export default ship;
