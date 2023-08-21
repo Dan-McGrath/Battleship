@@ -165,6 +165,10 @@ const gameboard = () => {
     return false;
   };
 
+  const missedAttack = [];
+
+  const getMissedAttacks = () => missedAttack;
+
   const receiveAttack = (cordinate) => {
     const squareIndex = getSquare(cordinate);
     const board = getGameBoardArray();
@@ -176,11 +180,11 @@ const gameboard = () => {
     square.isAttacked = true;
     const isShipAtCordinate = shipLocatedAtAttack(cordinate);
 
-    if (isShipAtCordinate !== false) {
-      return isShipAtCordinate;
+    if (isShipAtCordinate === false) {
+      missedAttack.push(cordinate);
+      return getMissedAttacks();
     }
-
-    return false;
+    return isShipAtCordinate;
   };
 
   return {
