@@ -1,5 +1,7 @@
+/* eslint-disable prefer-destructuring */
 const gameboard = () => {
   const gameboardArr = [];
+
   const createGameboard = () => {
     for (let i = 0; i <= 9; i++) {
       for (let j = 0; j <= 9; j++) {
@@ -28,6 +30,28 @@ const gameboard = () => {
         square.isOccupied = true;
       }
     }
+  };
+
+  const shipLocations = [];
+  const addShipLocation = (cordinates, ship) => {
+    const shipLocation = {
+      shipObject: ship,
+      shipCordinates: cordinates
+    };
+    return shipLocations.push(shipLocation);
+  };
+  const getShipLocations = () => shipLocations;
+
+  const getSquare = (cordinate) => {
+    const board = getGameBoardArray();
+    let square;
+    for (let i = 0; i < board.length; i++) {
+      if (JSON.stringify(board[i].cord) === JSON.stringify(cordinate)) {
+        square = i;
+        return square;
+      }
+    }
+    return false;
   };
 
   const checkCordinates = (cordinate) => {
@@ -65,7 +89,7 @@ const gameboard = () => {
     const shipLength = newShip.getLength();
     let cordinateToChange = cordinate[1];
     const newCordinates = [];
-    for (let i = shipLength; i >= 0; i--) {
+    for (let i = shipLength - 1; i >= 0; i--) {
       cordinateToChange = cordinate[1];
       cordinateToChange -= i;
       const newCordinate = [cordinate[0], cordinateToChange];
@@ -81,7 +105,7 @@ const gameboard = () => {
     const shipLength = newShip.getLength();
     let cordinateToChange = cordinate[0];
     const newCordinates = [];
-    for (let i = shipLength; i >= 0; i--) {
+    for (let i = shipLength - 1; i >= 0; i--) {
       cordinateToChange = cordinate[0];
       cordinateToChange -= i;
       const newCordinate = [cordinateToChange, cordinate[1]];
@@ -119,7 +143,44 @@ const gameboard = () => {
       const cordinate = shipCordinates[i];
       setOccupied(cordinate);
     }
-    return true;
+    return shipCordinates;
+  };
+
+  const shipLocatedAtAttack = (cordinate) => {
+    for (let i = 0; i < shipLocations.length; i++) {
+      for (let j = 0; j < shipLocations[i].shipCordinates.length; j++) {
+        if (
+          JSON.stringify(shipLocations[i].shipCordinates[j]) ===
+          JSON.stringify(cordinate)
+        ) {
+          const index = shipLocations[i].shipCordinates.indexOf(
+            shipLocations[i].shipCordinates[j]
+          );
+          shipLocations[i].shipCordinates.splice(index, 1);
+
+          return shipLocations[i].shipObject;
+        }
+      }
+    }
+    return false;
+  };
+
+  const receiveAttack = (cordinate) => {
+    const squareIndex = getSquare(cordinate);
+    const board = getGameBoardArray();
+    const square = board[squareIndex];
+    if (square.isAttacked === true) {
+      return false;
+    }
+
+    square.isAttacked = true;
+    const isShipAtCordinate = shipLocatedAtAttack(cordinate);
+
+    if (isShipAtCordinate !== false) {
+      return isShipAtCordinate;
+    }
+
+    return false;
   };
 
   return {
@@ -130,7 +191,10 @@ const gameboard = () => {
     placeShipHorizontalyRight,
     placeShipHorizontalyLeft,
     placeShipVerticalyUp,
-    placeShipVerticalyDown
+    placeShipVerticalyDown,
+    getShipLocations,
+    addShipLocation,
+    receiveAttack
   };
 };
 
