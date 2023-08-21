@@ -1,7 +1,8 @@
-const ship = (length) => {
+const ship = (length, name) => {
   let numberOfHits = 0;
   let sunk = false;
 
+  const getName = () => name;
   const getLength = () => length;
 
   const hit = () => {
@@ -15,7 +16,7 @@ const ship = (length) => {
     }
     return sunk;
   };
-  return { hit, isSunk, getLength };
+  return { hit, isSunk, getLength, getName };
 };
 
 export default ship;

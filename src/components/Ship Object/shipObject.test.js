@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import ship from "./shipObject";
 
 test("Ship gets hit", () => {
