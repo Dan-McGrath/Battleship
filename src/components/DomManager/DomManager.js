@@ -1,8 +1,16 @@
 import gameManager from "../GameManager/gameManager";
 
 const content = document.querySelector(".content");
+const GameManager = gameManager();
 const DomManager = () => {
   const getMainDiv = () => content;
+
+  const reset = () => {
+    while (content.hasChildNodes()) {
+      content.removeChild(content.firstChild);
+    }
+  };
+
   const displayHeader = () => {
     const header = document.createElement("header");
     getMainDiv().appendChild(header);
@@ -13,10 +21,18 @@ const DomManager = () => {
     title.textContent = "Battleship";
     content.appendChild(title);
   };
+
+  const playerStartBtnHandler = (e) => {
+    if (e.target.dataset.active === "false") {
+      e.target.dataset.active = "true";
+    }
+  };
+
   const playerStartBtn = () => {
     const playerStart = document.createElement("button");
     playerStart.classList.add("player-start");
-    playerStart.textContent = `${gameManager().player1.getName()} Start!`;
+    playerStart.textContent = `${GameManager.player1.getName()} Start!`;
+    playerStart.dataset.active = false;
     content.appendChild(playerStart);
   };
 
@@ -41,6 +57,8 @@ const DomManager = () => {
     displayTitle();
     playerGameboard();
     playerStartBtn();
+    const playerStart = document.querySelector(".player-start");
+    playerStart.addEventListener("click", playerStartBtnHandler());
   };
 
   const dsplayStartButton = () => {
@@ -57,6 +75,7 @@ const DomManager = () => {
     const btn = e.target;
     if (btn.dataset.active === "false") {
       btn.dataset.active = "true";
+      reset();
       displayGame();
     }
   };
