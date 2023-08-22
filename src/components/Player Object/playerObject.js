@@ -4,11 +4,26 @@ import gameboard from "../Gameboard Object/gameboardObject";
 const player = (name) => {
   const getName = () => name;
   const ships = [
-    ship(5, "Carrier"),
-    ship(4, "Battleship"),
-    ship(3, "Destroyer"),
-    ship(3, "Submarine"),
-    ship(2, "Patrol Boat")
+    {
+      ship: ship(5, "Carrier"),
+      placed: false
+    },
+    {
+      ship: ship(4, "Battleship"),
+      placed: false
+    },
+    {
+      ship: ship(3, "Destroyer"),
+      placed: false
+    },
+    {
+      ship: ship(3, "Submarine"),
+      placed: false
+    },
+    {
+      ship: ship(2, "Patrol Boat"),
+      placed: false
+    }
   ];
   const gameboardObject = gameboard();
 
@@ -17,7 +32,7 @@ const player = (name) => {
 
   const attack = (cordinates) => cordinates;
 
-  return { getName, ships, playersGameboard, attack };
+  return { getName, ships, playersGameboard, attack, gameboardObject };
 };
 
 export default player;
