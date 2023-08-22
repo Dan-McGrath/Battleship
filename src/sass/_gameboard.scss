@@ -1,8 +1,17 @@
+.content {
+  display: grid;
+  justify-content: space-around;
+  justify-items: center;
+}
+
 .gameboard {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: repeat(10, 1fr);
+  grid-template-columns: repeat(10, 50px);
+  grid-template-rows: repeat(10, 50px);
+  border: 1px solid black;
+  margin: 0 auto;
   .square {
     border: 1px black solid;
+    text-align: right;
   }
 }
