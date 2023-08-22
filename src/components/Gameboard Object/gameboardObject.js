@@ -156,9 +156,14 @@ const gameboard = () => {
           const index = shipLocations[i].shipCordinates.indexOf(
             shipLocations[i].shipCordinates[j]
           );
+          const ship = shipLocations[i].shipObject;
           shipLocations[i].shipCordinates.splice(index, 1);
 
-          return shipLocations[i].shipObject;
+          if (shipLocations[i].shipCordinates.length === 0) {
+            shipLocations.splice(i, 1);
+            break;
+          }
+          return ship;
         }
       }
     }
@@ -179,12 +184,18 @@ const gameboard = () => {
 
     square.isAttacked = true;
     const isShipAtCordinate = shipLocatedAtAttack(cordinate);
-
     if (isShipAtCordinate === false) {
       missedAttack.push(cordinate);
       return getMissedAttacks();
     }
     return isShipAtCordinate;
+  };
+
+  const allShipsSunk = () => {
+    if (shipLocations.length === 0) {
+      return true;
+    }
+    return false;
   };
 
   return {
@@ -198,7 +209,8 @@ const gameboard = () => {
     placeShipVerticalyDown,
     getShipLocations,
     addShipLocation,
-    receiveAttack
+    receiveAttack,
+    allShipsSunk
   };
 };
 

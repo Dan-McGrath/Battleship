@@ -185,7 +185,6 @@ test("should return object of ship attacked", () => {
   if (placeShip1) {
     newGameboard.addShipLocation(placeShip1, ship1);
   }
-
   expect(newGameboard.receiveAttack([0, 0])).toBeInstanceOf(Object);
 });
 
@@ -201,4 +200,57 @@ test("should return arr of missed shots if ship is not at location", () => {
   const newGameboard = gameboard();
   newGameboard.createGameboard();
   expect(newGameboard.receiveAttack([0, 0])).toBeInstanceOf(Array);
+});
+
+test("should return true if all ships are sunk", () => {
+  const newGameboard = gameboard();
+  newGameboard.createGameboard();
+  const ship1 = ship(2);
+  const ship1Cordinates = [0, 0];
+
+  const placeShip1 = newGameboard.placeShip(
+    newGameboard.placeShipHorizontalyRight,
+    ship1,
+    ship1Cordinates
+  );
+
+  if (placeShip1) {
+    newGameboard.addShipLocation(placeShip1, ship1);
+  }
+
+  newGameboard.receiveAttack([0, 0]);
+  newGameboard.receiveAttack([0, 1]);
+
+  expect(newGameboard.allShipsSunk()).toBe(true);
+});
+
+test("should return false if all ships are not sunk", () => {
+  const newGameboard = gameboard();
+  newGameboard.createGameboard();
+  const ship1 = ship(1, "ship1");
+  const ship2 = ship(3, "ship2");
+  const ship1Cordinates = [0, 0];
+  const ship2Cordinates = [4, 0];
+  const placeShip1 = newGameboard.placeShip(
+    newGameboard.placeShipHorizontalyRight,
+    ship1,
+    ship1Cordinates
+  );
+
+  const ship2Placement = newGameboard.placeShip(
+    newGameboard.placeShipHorizontalyRight,
+    ship2,
+    ship2Cordinates
+  );
+
+  if (placeShip1) {
+    newGameboard.addShipLocation(placeShip1, ship1);
+  }
+
+  if (ship2Placement) {
+    newGameboard.addShipLocation(ship2Placement, ship2);
+  }
+
+  newGameboard.receiveAttack([0, 0]);
+  expect(newGameboard.allShipsSunk()).toBe(false);
 });
