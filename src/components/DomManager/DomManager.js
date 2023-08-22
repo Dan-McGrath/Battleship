@@ -4,7 +4,7 @@ const content = document.querySelector(".content");
 const GameManager = gameManager();
 const DomManager = () => {
   const getMainDiv = () => content;
-
+  const player = GameManager.currentPlayer;
   const reset = () => {
     while (content.hasChildNodes()) {
       content.removeChild(content.firstChild);
@@ -22,26 +22,70 @@ const DomManager = () => {
     content.appendChild(title);
   };
 
+  const displayPlayerShips = () => {
+    const shipDiv = document.createElement("div");
+    shipDiv.classList.add("ships");
+    const monitor = document.querySelector(".monitor");
+    monitor.appendChild(shipDiv);
+    player.ships.forEach((ele) => {
+      const ship = document.createElement("div");
+      ship.classList.add("ship");
+      ship.dataset.active = false;
+      ship.dataset.index = player.ships.indexOf(ele);
+
+      const shipName = document.createElement("h3");
+      shipName.textContent = `${ele.ship.getName()}`;
+
+      const shipSize = document.createElement("p");
+      shipSize.textContent = `Size = ${ele.ship.getLength()}`;
+
+      shipDiv.appendChild(ship);
+      ship.appendChild(shipName);
+      ship.appendChild(shipSize);
+    });
+  };
+
+  const pickShipHandler = (e) => {
+    const ship = e.currentTarget;
+    e.stopPropagation();
+    const ships = document.querySelectorAll(".ship");
+    ships.forEach((ele) => {
+      if (ele.dataset.active === "true") {
+        ele.dataset.active = "false";
+      }
+    });
+    if (ship.dataset.active === "false") {
+      ship.dataset.active = "true";
+      return ship.dataset.index;
+    }
+
+    ship.dataset.active = "false";
+    return false;
+  };
+
   const playerStartBtnHandler = (e) => {
     if (e.target.dataset.active === "false") {
       e.target.dataset.active = "true";
+      const ships = document.querySelectorAll(".ship");
+      ships.forEach((ele) => {
+        ele.addEventListener("click", pickShipHandler);
+      });
     }
   };
 
   const playerStartBtn = () => {
     const playerStart = document.createElement("button");
     playerStart.classList.add("player-start");
-    playerStart.textContent = `${GameManager.player1.getName()} Start!`;
-    playerStart.dataset.active = false;
+    playerStart.textContent = `${player.getName()} Start!`;
+    playerStart.dataset.active = "false";
     content.appendChild(playerStart);
   };
 
   const playerGameboard = () => {
-    const gameboard = gameManager().player1.playersGameboard; // Change to switch gameboard based on whose turn it is
+    const gameboard = player.playersGameboard;
     const gameboardDiv = document.createElement("div");
+    const monitor = document.querySelector(".monitor");
     gameboardDiv.classList.add("gameboard");
-
-    content.appendChild(gameboardDiv);
 
     gameboard.forEach((ele) => {
       const square = ele;
@@ -50,15 +94,24 @@ const DomManager = () => {
       squareDiv.textContent = square.cord;
       gameboardDiv.appendChild(squareDiv);
     });
+    monitor.appendChild(gameboardDiv);
+  };
+
+  const playerMonitor = () => {
+    const monitor = document.createElement("div");
+    monitor.classList.add("monitor");
+    content.appendChild(monitor);
+    playerGameboard();
+    displayPlayerShips();
   };
 
   const displayGame = () => {
     displayHeader();
     displayTitle();
-    playerGameboard();
+    playerMonitor();
     playerStartBtn();
     const playerStart = document.querySelector(".player-start");
-    playerStart.addEventListener("click", playerStartBtnHandler());
+    playerStart.addEventListener("click", playerStartBtnHandler);
   };
 
   const dsplayStartButton = () => {
