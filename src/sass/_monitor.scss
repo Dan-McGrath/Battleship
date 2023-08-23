@@ -41,22 +41,22 @@
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
 
-    .up {
+    #up {
       grid-column: 2;
       grid-row: 1;
     }
 
-    .down {
+    #down {
       grid-column: 2;
       grid-row: 3;
     }
 
-    .left {
+    #left {
       grid-column: 1;
       grid-row: 2;
     }
 
-    .right {
+    #right {
       grid-column: 3;
       grid-row: 2;
     }
@@ -66,6 +66,15 @@
 .ship[data-active="true"] {
   background-color: gray;
 }
+
+.direction[data-active="true"] {
+  background-color: green;
+}
+
+.square[data-active="true"] {
+  background-color: grey;
+}
+
 .hidden {
   visibility: hidden;
 }
