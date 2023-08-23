@@ -56,7 +56,7 @@ const DomManager = () => {
     });
     if (ship.dataset.active === "false") {
       ship.dataset.active = "true";
-      return ship.dataset.index;
+      return player.selectShip(ship.dataset.index);
     }
 
     ship.dataset.active = "false";
@@ -64,13 +64,49 @@ const DomManager = () => {
   };
 
   const playerStartBtnHandler = (e) => {
+    const gameboard = document.querySelector(".gameboard");
     if (e.target.dataset.active === "false") {
+      gameboard.classList.remove("hidden");
       e.target.dataset.active = "true";
       const ships = document.querySelectorAll(".ship");
       ships.forEach((ele) => {
         ele.addEventListener("click", pickShipHandler);
       });
     }
+  };
+
+  const directionControls = () => {
+    const controller = document.createElement("div");
+    controller.classList.add("controller");
+
+    const controlDiv = document.createElement("div");
+    controlDiv.classList.add("controls");
+
+    const subtitle = document.createElement("h2");
+    subtitle.textContent = "Select orientation of ship";
+
+    controller.appendChild(subtitle);
+
+    const upBtn = document.createElement("button");
+    upBtn.textContent = "Up";
+    upBtn.classList.add("up");
+    const downBtn = document.createElement("button");
+    downBtn.textContent = "Down";
+    downBtn.classList.add("down");
+    const rightBtn = document.createElement("button");
+    rightBtn.textContent = "Right";
+    rightBtn.classList.add("right");
+    const leftBtn = document.createElement("button");
+    leftBtn.textContent = "Left";
+    leftBtn.classList.add("left");
+
+    const monitor = document.querySelector(".monitor");
+    monitor.appendChild(controller);
+    controller.appendChild(controlDiv);
+    controlDiv.appendChild(upBtn);
+    controlDiv.appendChild(downBtn);
+    controlDiv.appendChild(rightBtn);
+    controlDiv.appendChild(leftBtn);
   };
 
   const playerStartBtn = () => {
@@ -86,6 +122,7 @@ const DomManager = () => {
     const gameboardDiv = document.createElement("div");
     const monitor = document.querySelector(".monitor");
     gameboardDiv.classList.add("gameboard");
+    gameboardDiv.classList.add("hidden");
 
     gameboard.forEach((ele) => {
       const square = ele;
@@ -103,9 +140,10 @@ const DomManager = () => {
     content.appendChild(monitor);
     playerGameboard();
     displayPlayerShips();
+    directionControls();
   };
 
-  const displayGame = () => {
+  const displayDefaultGame = () => {
     displayHeader();
     displayTitle();
     playerMonitor();
@@ -129,7 +167,7 @@ const DomManager = () => {
     if (btn.dataset.active === "false") {
       btn.dataset.active = "true";
       reset();
-      displayGame();
+      displayDefaultGame();
     }
   };
 
