@@ -5,6 +5,7 @@ const GameManager = gameManager();
 const DomManager = () => {
   const getMainDiv = () => content;
   const player = GameManager.currentPlayer;
+
   const reset = () => {
     while (content.hasChildNodes()) {
       content.removeChild(content.firstChild);
@@ -23,15 +24,17 @@ const DomManager = () => {
   };
 
   const displayPlayerShips = () => {
-    const shipDiv = document.createElement("div");
-    shipDiv.classList.add("ships");
+    const shipsDiv = document.createElement("div");
+    shipsDiv.classList.add("ships");
     const monitor = document.querySelector(".monitor");
-    monitor.appendChild(shipDiv);
+    monitor.appendChild(shipsDiv);
     player.ships.forEach((ele) => {
-      const ship = document.createElement("div");
-      ship.classList.add("ship");
-      ship.dataset.active = false;
-      ship.dataset.index = player.ships.indexOf(ele);
+      const shipDiv = document.createElement("div");
+      shipDiv.classList.add("ship");
+      shipDiv.dataset.active = false;
+      shipDiv.dataset.index = player.ships.indexOf(ele);
+      shipDiv.dataset.numberOfHits = ele.ship.getNumberofHits();
+      shipDiv.dataset.isSunk = ele.ship.isSunk();
 
       const shipName = document.createElement("h3");
       shipName.textContent = `${ele.ship.getName()}`;
@@ -39,9 +42,14 @@ const DomManager = () => {
       const shipSize = document.createElement("p");
       shipSize.textContent = `Size = ${ele.ship.getLength()}`;
 
-      shipDiv.appendChild(ship);
-      ship.appendChild(shipName);
-      ship.appendChild(shipSize);
+      const placeShipbtn = document.createElement("button");
+      placeShipbtn.dataset.active = "true";
+      placeShipbtn.classList.add("hidden");
+
+      shipsDiv.appendChild(shipDiv);
+      shipDiv.appendChild(shipName);
+      shipDiv.appendChild(shipSize);
+      shipDiv.appendChild(placeShipbtn);
     });
   };
 
@@ -63,16 +71,32 @@ const DomManager = () => {
     return false;
   };
 
-  const playerStartBtnHandler = (e) => {
-    const gameboard = document.querySelector(".gameboard");
-    if (e.target.dataset.active === "false") {
-      gameboard.classList.remove("hidden");
-      e.target.dataset.active = "true";
-      const ships = document.querySelectorAll(".ship");
-      ships.forEach((ele) => {
-        ele.addEventListener("click", pickShipHandler);
-      });
-    }
+  const playerGameboard = () => {
+    const gameboard = player.playersGameboard;
+    const gameboardDiv = document.createElement("div");
+    const monitor = document.querySelector(".monitor");
+    gameboardDiv.classList.add("gameboard");
+
+    gameboard.forEach((ele) => {
+      const square = ele;
+      const squareDiv = document.createElement("div");
+      squareDiv.classList.add("square");
+      squareDiv.textContent = square.cord;
+      squareDiv.dataset.index = gameboard.indexOf(ele);
+      squareDiv.dataset.isAttacked = square.isAttacked;
+      squareDiv.dataset.isOccupied = square.isOccupied;
+      squareDiv.dataset.active = "false";
+
+      gameboardDiv.appendChild(squareDiv);
+    });
+    monitor.appendChild(gameboardDiv);
+  };
+
+  const playerMonitor = () => {
+    const monitor = document.createElement("div");
+    monitor.classList.add("monitor");
+    content.appendChild(monitor);
+    playerGameboard();
   };
 
   const directionControls = () => {
@@ -89,16 +113,27 @@ const DomManager = () => {
 
     const upBtn = document.createElement("button");
     upBtn.textContent = "Up";
-    upBtn.classList.add("up");
+    upBtn.classList.add("direction");
+    upBtn.setAttribute("id", "up");
+    upBtn.dataset.active = "false";
+
     const downBtn = document.createElement("button");
     downBtn.textContent = "Down";
-    downBtn.classList.add("down");
+    downBtn.classList.add("direction");
+    downBtn.setAttribute("id", "down");
+    downBtn.dataset.active = "false";
+
     const rightBtn = document.createElement("button");
     rightBtn.textContent = "Right";
-    rightBtn.classList.add("right");
+    rightBtn.classList.add("direction");
+    rightBtn.setAttribute("id", "right");
+    rightBtn.dataset.active = "false";
+
     const leftBtn = document.createElement("button");
     leftBtn.textContent = "Left";
-    leftBtn.classList.add("left");
+    leftBtn.classList.add("direction");
+    leftBtn.setAttribute("id", "left");
+    leftBtn.dataset.active = "false";
 
     const monitor = document.querySelector(".monitor");
     monitor.appendChild(controller);
@@ -109,38 +144,76 @@ const DomManager = () => {
     controlDiv.appendChild(leftBtn);
   };
 
+  const pickCordinateshandler = (e) => {
+    const currentSquare = e.currentTarget;
+    const squares = document.querySelectorAll(".square");
+    squares.forEach((ele) => {
+      if (ele.dataset.active === "true") {
+        ele.dataset.active = "false";
+      }
+    });
+
+    if (currentSquare.dataset.active === "false") {
+      currentSquare.dataset.active = "true";
+    }
+  };
+
+  const directionControlsHandler = (e) => {
+    const direction = e.currentTarget;
+    e.stopPropagation();
+    const allDirections = document.querySelectorAll(".direction");
+    allDirections.forEach((ele) => {
+      if (ele.dataset.active === "true") {
+        ele.dataset.active = "false";
+      }
+    });
+    if (direction.dataset.active === "false") {
+      direction.dataset.active = "true";
+      return player.selectDirection(direction.id);
+    }
+    direction.dataset.active = "false";
+    return false;
+  };
+
+  const currentPlayerPickShipLocation = () => {
+    displayHeader();
+    displayTitle();
+    playerMonitor();
+    displayPlayerShips();
+    directionControls();
+    const ships = document.querySelectorAll(".ship");
+    ships.forEach((ele) => {
+      ele.addEventListener("click", pickShipHandler);
+    });
+
+    const directions = document.querySelectorAll(".direction");
+    directions.forEach((ele) => {
+      ele.addEventListener("click", directionControlsHandler);
+    });
+
+    const squares = document.querySelectorAll(".square");
+    squares.forEach((ele) => {
+      ele.addEventListener("click", pickCordinateshandler);
+    });
+  };
+
+  const playerStartBtnHandler = (e) => {
+    const gameboard = document.querySelector(".gameboard");
+    if (e.target.dataset.active === "false") {
+      gameboard.classList.remove("hidden");
+      e.target.dataset.active = "true";
+      e.target.classList.add("hidden");
+      reset();
+      currentPlayerPickShipLocation();
+    }
+  };
+
   const playerStartBtn = () => {
     const playerStart = document.createElement("button");
     playerStart.classList.add("player-start");
     playerStart.textContent = `${player.getName()} Start!`;
     playerStart.dataset.active = "false";
     content.appendChild(playerStart);
-  };
-
-  const playerGameboard = () => {
-    const gameboard = player.playersGameboard;
-    const gameboardDiv = document.createElement("div");
-    const monitor = document.querySelector(".monitor");
-    gameboardDiv.classList.add("gameboard");
-    gameboardDiv.classList.add("hidden");
-
-    gameboard.forEach((ele) => {
-      const square = ele;
-      const squareDiv = document.createElement("div");
-      squareDiv.classList.add("square");
-      squareDiv.textContent = square.cord;
-      gameboardDiv.appendChild(squareDiv);
-    });
-    monitor.appendChild(gameboardDiv);
-  };
-
-  const playerMonitor = () => {
-    const monitor = document.createElement("div");
-    monitor.classList.add("monitor");
-    content.appendChild(monitor);
-    playerGameboard();
-    displayPlayerShips();
-    directionControls();
   };
 
   const displayDefaultGame = () => {
