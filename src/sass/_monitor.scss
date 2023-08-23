@@ -6,6 +6,7 @@
 
 .gameboard {
   display: grid;
+  grid-column: 0 / span 1;
   grid-template-columns: repeat(10, 50px);
   grid-template-rows: repeat(10, 50px);
   border: 1px solid black;
@@ -17,19 +18,54 @@
 }
 
 .monitor {
-  display: flex;
+  display: grid;
+  grid-template-columns: 3fr, 1fr;
+  grid-template-rows: 3fr 1fr;
   gap: 1em;
   justify-items: center;
   .ships {
     display: grid;
     align-content: space-between;
+    grid-column: 2;
     .ship {
       border: 1px solid black;
       padding: 1em;
+    }
+  }
+
+  .controls {
+    display: grid;
+    gap: 1em;
+    margin-top: 1rem;
+    grid-column: 1;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+
+    .up {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .down {
+      grid-column: 2;
+      grid-row: 3;
+    }
+
+    .left {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .right {
+      grid-column: 3;
+      grid-row: 2;
     }
   }
 }
 
 .ship[data-active="true"] {
   background-color: gray;
+}
+.hidden {
+  visibility: hidden;
 }
