@@ -1,4 +1,5 @@
 import gameManager from "../GameManager/gameManager";
+import gameboard from "../Gameboard Object/gameboardObject";
 
 const content = document.querySelector(".content");
 const GameManager = gameManager();
@@ -23,6 +24,58 @@ const DomManager = () => {
     content.appendChild(title);
   };
 
+  const placeShipHandler = (e) => {
+    const placeShip = e.currentTarget;
+    const ships = document.querySelectorAll(".ship");
+    const squares = document.querySelectorAll(".square");
+    const directions = document.querySelectorAll(".direction");
+
+    const getShipIndex = () => {
+      let index;
+      ships.forEach((ele) => {
+        if (ele.dataset.active === "true") {
+          index = ele.dataset.index;
+          return index;
+        }
+        return false;
+      });
+      return index;
+    };
+
+    const getSquareIndex = () => {
+      let index;
+      squares.forEach((ele) => {
+        if (ele.dataset.active === "true") {
+          index = ele.dataset.index;
+          return index;
+        }
+        return false;
+      });
+      return index;
+    };
+
+    const getDirection = () => {
+      let direction;
+      directions.forEach((ele) => {
+        if (ele.dataset.active === "true") {
+          direction = ele.id;
+          return direction;
+        }
+        return false;
+      });
+      return direction;
+    };
+
+    const cordinatesSelected = getSquareIndex();
+    const shipSelected = getShipIndex();
+    const directionChosen = getDirection();
+
+    if (cordinatesSelected && shipSelected && directionChosen) {
+      player.placeShip(shipSelected, directionChosen, cordinatesSelected);
+      console.log(player.playersGameboard);
+    }
+  };
+
   const displayPlayerShips = () => {
     const shipsDiv = document.createElement("div");
     shipsDiv.classList.add("ships");
@@ -43,8 +96,10 @@ const DomManager = () => {
       shipSize.textContent = `Size = ${ele.ship.getLength()}`;
 
       const placeShipbtn = document.createElement("button");
+      placeShipbtn.textContent = "Place Ship!";
       placeShipbtn.dataset.active = "true";
       placeShipbtn.classList.add("hidden");
+      placeShipbtn.classList.add("place-ship");
 
       shipsDiv.appendChild(shipDiv);
       shipDiv.appendChild(shipName);
@@ -60,10 +115,12 @@ const DomManager = () => {
     ships.forEach((ele) => {
       if (ele.dataset.active === "true") {
         ele.dataset.active = "false";
+        ele.lastChild.classList.add("hidden");
       }
     });
     if (ship.dataset.active === "false") {
       ship.dataset.active = "true";
+      ship.lastChild.classList.remove("hidden");
       return player.selectShip(ship.dataset.index);
     }
 
@@ -194,6 +251,11 @@ const DomManager = () => {
     const squares = document.querySelectorAll(".square");
     squares.forEach((ele) => {
       ele.addEventListener("click", pickCordinateshandler);
+    });
+
+    const placeShipBtns = document.querySelectorAll(".place-ship");
+    placeShipBtns.forEach((ele) => {
+      ele.addEventListener("click", placeShipHandler);
     });
   };
 
