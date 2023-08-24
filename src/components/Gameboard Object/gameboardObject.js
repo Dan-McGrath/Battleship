@@ -34,11 +34,15 @@ const gameboard = () => {
 
   const shipLocations = [];
   const addShipLocation = (cordinates, ship) => {
+    if (cordinates === false) {
+      return false;
+    }
     const shipLocation = {
       shipObject: ship,
       shipCordinates: cordinates
     };
-    return shipLocations.push(shipLocation);
+    shipLocations.push(shipLocation);
+    return true;
   };
   const getShipLocations = () => shipLocations;
 
@@ -136,14 +140,14 @@ const gameboard = () => {
   const placeShip = (direction, newShip, shipCordinate) => {
     const placement = direction(shipCordinate, newShip);
     if (placement === false) {
-      return false;
+      alert("Ship Can not be placed");
     }
-    const shipCordinates = placement;
-    for (let i = 0; i < shipCordinates.length; i++) {
-      const cordinate = shipCordinates[i];
+    let cordinate;
+    for (let i = 0; i < placement.length; i++) {
+      cordinate = placement[i];
       setOccupied(cordinate);
     }
-    return shipCordinates;
+    return placement;
   };
 
   const shipLocatedAtAttack = (cordinate) => {
