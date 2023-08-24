@@ -90,3 +90,7 @@
 .square[data-is-occupied="true"] {
   background-color: blue;
 }
+
+.square[data-is-attacked="true"] {
+  background-color: red;
+}

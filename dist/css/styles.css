@@ -135,7 +135,7 @@ h1 {
 
 .monitor {
   display: grid;
-  grid-template-columns: 3fr, 1fr;
+  grid-template-columns: 3fr 1fr;
   grid-template-rows: 3fr 1fr;
   gap: 1em;
   justify-items: center;
@@ -148,6 +148,13 @@ h1 {
 .monitor .ships .ship {
   border: 1px solid black;
   padding: 1em;
+}
+.monitor .ships .side-btns {
+  grid-column: 3;
+  grid-row: 3;
+}
+.monitor .end-placement {
+  margin-top: 3em;
 }
 .monitor .controls {
   display: grid;
@@ -188,4 +195,12 @@ h1 {
 
 .hidden {
   visibility: hidden;
+}
+
+.square[data-is-occupied=true] {
+  background-color: blue;
+}
+
+.square[data-is-attacked=true] {
+  background-color: red;
 }
