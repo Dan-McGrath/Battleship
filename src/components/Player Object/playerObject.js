@@ -39,7 +39,8 @@ const player = (name) => {
 
   const selectShip = (index) => {
     if (ships[index].placed === true) {
-      ships[index].placed = false;
+      alert("Ship has been placed");
+      return false;
     }
     return ships[index].ship;
   };
@@ -68,10 +69,14 @@ const player = (name) => {
   };
 
   const placeShip = (shipIndex, direction, cordinatesIndex) => {
+    const playerShip = selectShip(shipIndex);
     const cordinate = selectCordinates(cordinatesIndex);
     const playerdirection = selectDirection(direction);
-    const playerShip = selectShip(shipIndex);
-    if (ships[shipIndex].placed === "false") {
+
+    if (ships[shipIndex].placed === false) {
+      if (playerShip === false) {
+        return false;
+      }
       if (cordinate === false) {
         return false;
       }
@@ -79,13 +84,12 @@ const player = (name) => {
       if (playerdirection === false) {
         return false;
       }
-      console.log(
-        gameboardObject.placeShip(playerdirection, playerShip, cordinate)
-      );
       return gameboardObject.placeShip(playerdirection, playerShip, cordinate);
     }
-    return true;
+
+    return false;
   };
+
   return {
     getName,
     ships,
