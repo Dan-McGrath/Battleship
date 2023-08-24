@@ -192,7 +192,7 @@ const gameboard = () => {
       missedAttack.push(cordinate);
       return getMissedAttacks();
     }
-    return isShipAtCordinate;
+    return getMissedAttacks();
   };
 
   const allShipsSunk = () => {
@@ -214,7 +214,8 @@ const gameboard = () => {
     getShipLocations,
     addShipLocation,
     receiveAttack,
-    allShipsSunk
+    allShipsSunk,
+    getMissedAttacks
   };
 };
 
