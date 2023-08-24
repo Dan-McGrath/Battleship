@@ -71,8 +71,22 @@ const DomManager = () => {
     const directionChosen = getDirection();
 
     if (cordinatesSelected && shipSelected && directionChosen) {
-      player.placeShip(shipSelected, directionChosen, cordinatesSelected);
-      console.log(player.playersGameboard);
+      const shipCordinates = player.placeShip(
+        shipSelected,
+        directionChosen,
+        cordinatesSelected
+      );
+      const shipLocation = player.gameboardObject.addShipLocation(
+        shipCordinates,
+        shipSelected
+      );
+      if (shipLocation.shipCordinates === false) {
+        alert("ship cannot be placed here");
+      }
+      player.ships[shipSelected].placed = true;
+      console.log(player.gameboardObject.getShipLocations());
+      reset();
+      currentPlayerPickShipLocation();
     }
   };
 
@@ -129,17 +143,17 @@ const DomManager = () => {
   };
 
   const playerGameboard = () => {
-    const gameboard = player.playersGameboard;
+    const playersBoard = player.playersGameboard;
     const gameboardDiv = document.createElement("div");
     const monitor = document.querySelector(".monitor");
     gameboardDiv.classList.add("gameboard");
 
-    gameboard.forEach((ele) => {
+    playersBoard.forEach((ele) => {
       const square = ele;
       const squareDiv = document.createElement("div");
       squareDiv.classList.add("square");
       squareDiv.textContent = square.cord;
-      squareDiv.dataset.index = gameboard.indexOf(ele);
+      squareDiv.dataset.index = playersBoard.indexOf(ele);
       squareDiv.dataset.isAttacked = square.isAttacked;
       squareDiv.dataset.isOccupied = square.isOccupied;
       squareDiv.dataset.active = "false";
@@ -260,9 +274,9 @@ const DomManager = () => {
   };
 
   const playerStartBtnHandler = (e) => {
-    const gameboard = document.querySelector(".gameboard");
+    const gameboardDiv = document.querySelector(".gameboard");
     if (e.target.dataset.active === "false") {
-      gameboard.classList.remove("hidden");
+      gameboardDiv.classList.remove("hidden");
       e.target.dataset.active = "true";
       e.target.classList.add("hidden");
       reset();
