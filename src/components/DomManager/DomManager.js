@@ -122,6 +122,28 @@ const DomManager = () => {
     });
   };
 
+  const endShipPlacementHandler = (e) => {
+    const current = e.currentTarget;
+    e.stopPropagation();
+
+    const allPlaced = player.ships.every((ele) => ele.placed);
+
+    if (allPlaced === true) {
+      console.log(true);
+    }
+  };
+
+  const endShipPlacementBtn = () => {
+    const sideBtnDiv = document.createElement("div");
+    sideBtnDiv.classList.add("side-btns");
+    const endPlacement = document.createElement("button");
+    endPlacement.classList.add("end-placement");
+    endPlacement.textContent = "End Turn";
+    const monitor = document.querySelector(".monitor");
+    monitor.appendChild(sideBtnDiv);
+    sideBtnDiv.appendChild(endPlacement);
+  };
+
   const pickShipHandler = (e) => {
     const ship = e.currentTarget;
     e.stopPropagation();
@@ -252,6 +274,7 @@ const DomManager = () => {
     playerMonitor();
     displayPlayerShips();
     directionControls();
+    endShipPlacementBtn();
     const ships = document.querySelectorAll(".ship");
     ships.forEach((ele) => {
       ele.addEventListener("click", pickShipHandler);
@@ -271,6 +294,9 @@ const DomManager = () => {
     placeShipBtns.forEach((ele) => {
       ele.addEventListener("click", placeShipHandler);
     });
+
+    const endPlacement = document.querySelector(".end-placement");
+    endPlacement.addEventListener("click", endShipPlacementHandler);
   };
 
   const playerStartBtnHandler = (e) => {
