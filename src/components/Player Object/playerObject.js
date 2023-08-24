@@ -25,17 +25,23 @@ const player = (name) => {
       placed: false
     }
   ];
+
   const gameboardObject = gameboard();
+  const getBlankGameboardObject = gameboard();
 
   gameboardObject.createGameboard();
+  getBlankGameboardObject.createGameboard();
+
   const playersGameboard = gameboardObject.getGameBoardArray();
+  const blankGameboard = getBlankGameboardObject.getGameBoardArray();
 
   const directionUp = gameboardObject.placeShipVerticalyUp;
   const directionDown = gameboardObject.placeShipVerticalyDown;
   const directionRight = gameboardObject.placeShipHorizontalyRight;
   const directionLeft = gameboardObject.placeShipHorizontalyLeft;
 
-  const attack = (cordinates) => cordinates;
+  const attack = (cordinates) =>
+    getBlankGameboardObject.receiveAttack(cordinates);
 
   const selectShip = (index) => {
     if (ships[index].placed === true) {
@@ -99,7 +105,8 @@ const player = (name) => {
     selectShip,
     selectDirection,
     selectCordinates,
-    placeShip
+    placeShip,
+    blankGameboard
   };
 };
 
