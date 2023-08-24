@@ -121,6 +121,58 @@ const DomManager = () => {
     });
   };
 
+  const attackBtnHandler = (e) => {
+    const square = document.querySelectorAll(".square");
+    const gameboardToAttack = player.blankGameboard;
+    const enemyPlayer = GameManager.getEnemyPlayer();
+    const enemyBoardToAttack = GameManager.getEnemyPlayer().playersGameboard;
+    let cordinatSelected;
+    for (let i = 0; i < gameboardToAttack.length; i++) {
+      if (
+        square[i].dataset.active === "true" &&
+        gameboardToAttack[i].isAttacked === false
+      ) {
+        cordinatSelected = gameboardToAttack[i];
+        enemyPlayer.gameboardObject.receiveAttack(enemyBoardToAttack[i].cord);
+        console.log(enemyBoardToAttack[i].cord);
+        player.attack(cordinatSelected.cord);
+        console.log(enemyBoardToAttack);
+        console.log(
+          GameManager.getEnemyPlayer().gameboardObject.getMissedAttacks()
+        );
+        reset();
+        displayGame();
+      }
+    }
+  };
+
+  const getAttackBtn = () => {
+    const sideBtnDiv = document.querySelector(".side-btns");
+    const attackBtn = document.createElement("button");
+    attackBtn.classList.add("attack-btn");
+    attackBtn.textContent = "Attack!";
+    sideBtnDiv.appendChild(attackBtn);
+  };
+
+  const currentPlayersTurn = () => {};
+  const displayGame = () => {
+    displayHeader();
+    displayTitle();
+    playerMonitor();
+    blankGameBoard();
+    displayPlayerShips();
+    createSidebtnsDiv();
+    getAttackBtn();
+
+    const attack = document.querySelector(".attack-btn");
+    attack.addEventListener("click", attackBtnHandler);
+
+    const squares = document.querySelectorAll(".square");
+    squares.forEach((ele) => {
+      ele.addEventListener("click", pickCordinateshandler);
+    });
+  };
+
   const endShipPlacementHandler = (e) => {
     const current = e.currentTarget;
     e.stopPropagation();
@@ -134,29 +186,25 @@ const DomManager = () => {
         currentPlayerPickShipLocation();
       } else {
         reset();
+        displayGame();
       }
       player = GameManager.changeCurrentPlayer();
     }
+  };
 
-    // currentPlayerPickShipLocation();
-    // if (
-    //   allPlaced === true &&
-    //   player.getName() === GameManager.getPlayer1().getName()
-    // ) {
-
-    // } else {
-    //   reset();
-    //   console.log(true);
-    // }
+  const createSidebtnsDiv = () => {
+    const monitor = document.querySelector(".monitor");
+    const sideBtnDiv = document.createElement("div");
+    sideBtnDiv.classList.add("side-btns");
+    monitor.appendChild(sideBtnDiv);
   };
 
   const endShipPlacementBtn = () => {
-    const sideBtnDiv = document.createElement("div");
-    sideBtnDiv.classList.add("side-btns");
     const endPlacement = document.createElement("button");
     endPlacement.classList.add("end-placement");
     endPlacement.textContent = "End Turn";
     const monitor = document.querySelector(".monitor");
+    const sideBtnDiv = document.querySelector(".side-btns");
     monitor.appendChild(sideBtnDiv);
     sideBtnDiv.appendChild(endPlacement);
   };
@@ -179,6 +227,27 @@ const DomManager = () => {
 
     ship.dataset.active = "false";
     return false;
+  };
+
+  const blankGameBoard = () => {
+    const blankBoard = player.blankGameboard;
+    const gameboardDiv = document.createElement("div");
+    const monitor = document.querySelector(".monitor");
+    gameboardDiv.classList.add("gameboard");
+
+    blankBoard.forEach((ele) => {
+      const square = ele;
+      const squareDiv = document.createElement("div");
+      squareDiv.classList.add("square");
+      squareDiv.textContent = square.cord;
+      squareDiv.dataset.index = blankBoard.indexOf(ele);
+      squareDiv.dataset.isAttacked = square.isAttacked;
+      squareDiv.dataset.isOccupied = square.isOccupied;
+      squareDiv.dataset.active = "false";
+
+      gameboardDiv.appendChild(squareDiv);
+    });
+    monitor.appendChild(gameboardDiv);
   };
 
   const playerGameboard = () => {
@@ -207,7 +276,6 @@ const DomManager = () => {
     const monitor = document.createElement("div");
     monitor.classList.add("monitor");
     content.appendChild(monitor);
-    playerGameboard();
   };
 
   const directionControls = () => {
@@ -290,8 +358,10 @@ const DomManager = () => {
     displayHeader();
     displayTitle();
     playerMonitor();
+    playerGameboard();
     displayPlayerShips();
     directionControls();
+    createSidebtnsDiv();
     endShipPlacementBtn();
     const ships = document.querySelectorAll(".ship");
     ships.forEach((ele) => {
@@ -340,6 +410,7 @@ const DomManager = () => {
     displayHeader();
     displayTitle();
     playerMonitor();
+    playerGameboard();
     playerStartBtn();
     const playerStart = document.querySelector(".player-start");
     playerStart.addEventListener("click", playerStartBtnHandler);
