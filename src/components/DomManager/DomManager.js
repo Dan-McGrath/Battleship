@@ -5,7 +5,7 @@ const content = document.querySelector(".content");
 const GameManager = gameManager();
 const DomManager = () => {
   const getMainDiv = () => content;
-  const player = GameManager.currentPlayer;
+  let player = GameManager.getCurrentPlayer();
 
   const reset = () => {
     while (content.hasChildNodes()) {
@@ -129,7 +129,9 @@ const DomManager = () => {
     const allPlaced = player.ships.every((ele) => ele.placed);
 
     if (allPlaced === true) {
-      console.log(true);
+      player = GameManager.changeCurrentPlayer();
+      reset();
+      currentPlayerPickShipLocation();
     }
   };
 
@@ -165,6 +167,7 @@ const DomManager = () => {
   };
 
   const playerGameboard = () => {
+    console.log(player.getName());
     const playersBoard = player.playersGameboard;
     const gameboardDiv = document.createElement("div");
     const monitor = document.querySelector(".monitor");
