@@ -5,21 +5,34 @@ const gameManager = () => {
   const player2 = player("Player 2");
 
   let currentPlayer = player1;
+  let enemyPlayer = player2;
 
-  const player1Ships = player1.ships;
-  const player2Ships = player2.ships;
+  const getPlayer1 = () => player1;
+
+  const getPlayer2 = () => player2;
+
+  const getCurrentPlayer = () => currentPlayer;
+
+  const getEnemyPlayer = () => enemyPlayer;
 
   const changeCurrentPlayer = () => {
     if (currentPlayer === player1) {
       currentPlayer = player2;
+      enemyPlayer = player1;
+      return currentPlayer;
     }
     currentPlayer = player2;
+    enemyPlayer = player1;
     return currentPlayer;
   };
 
-  const getCurrentPlayer = () => currentPlayer;
-
-  return { getCurrentPlayer, changeCurrentPlayer };
+  return {
+    getCurrentPlayer,
+    changeCurrentPlayer,
+    getEnemyPlayer,
+    getPlayer1,
+    getPlayer2
+  };
 };
 
 export default gameManager;
