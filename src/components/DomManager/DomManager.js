@@ -84,7 +84,6 @@ const DomManager = () => {
         alert("ship cannot be placed here");
       }
       player.ships[shipSelected].placed = true;
-      console.log(player.gameboardObject.getShipLocations());
       reset();
       currentPlayerPickShipLocation();
     }
@@ -129,10 +128,26 @@ const DomManager = () => {
     const allPlaced = player.ships.every((ele) => ele.placed);
 
     if (allPlaced === true) {
+      if (player.getName() === GameManager.getPlayer1().getName()) {
+        reset();
+        player = GameManager.changeCurrentPlayer();
+        currentPlayerPickShipLocation();
+      } else {
+        reset();
+      }
       player = GameManager.changeCurrentPlayer();
-      reset();
-      currentPlayerPickShipLocation();
     }
+
+    // currentPlayerPickShipLocation();
+    // if (
+    //   allPlaced === true &&
+    //   player.getName() === GameManager.getPlayer1().getName()
+    // ) {
+
+    // } else {
+    //   reset();
+    //   console.log(true);
+    // }
   };
 
   const endShipPlacementBtn = () => {
@@ -167,8 +182,8 @@ const DomManager = () => {
   };
 
   const playerGameboard = () => {
-    console.log(player.getName());
     const playersBoard = player.playersGameboard;
+
     const gameboardDiv = document.createElement("div");
     const monitor = document.querySelector(".monitor");
     gameboardDiv.classList.add("gameboard");
