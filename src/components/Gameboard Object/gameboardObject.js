@@ -160,7 +160,6 @@ const gameboard = () => {
 
   const checkIfMissed = (cordinateIndex) => {
     const missedSquare = getSquare(cordinateIndex);
-    console.log(missedSquare);
     if (gameboardArr[missedSquare].isOccupied === false) {
       missedAttack.push(gameboardArr[missedSquare].cord);
     }
