@@ -78,7 +78,7 @@ const DomManager = () => {
       );
       const shipLocation = player.gameboardObject.addShipLocation(
         shipCordinates,
-        shipSelected
+        player.ships[shipSelected]
       );
       if (shipLocation.shipCordinates === false) {
         alert("ship cannot be placed here");
@@ -143,17 +143,19 @@ const DomManager = () => {
     const enemyBoardToAttack = GameManager.getEnemyPlayer().playersGameboard;
     const playersBoard = player.playersGameboard;
     let cordinatSelected;
+    const enemyShips = enemyPlayer.ships;
     for (let i = 0; i < gameboardToAttack.length; i++) {
       if (
         square[i].dataset.active === "true" &&
         gameboardToAttack[i].isAttacked === false
       ) {
+        enemyPlayer.gameboardObject.checkIfMissed(enemyBoardToAttack[i].cord);
         cordinatSelected = gameboardToAttack[i];
         enemyPlayer.gameboardObject.receiveAttack(enemyBoardToAttack[i].cord);
         player.attack(cordinatSelected.cord);
 
         const missed = enemyPlayer.gameboardObject.getMissedAttacks();
-
+        console.log(missed);
         missed.forEach((ele) => {
           if (
             JSON.stringify(gameboardToAttack[i].cord) === JSON.stringify(ele)
@@ -165,8 +167,14 @@ const DomManager = () => {
         reset();
         displayGame();
 
+        const allSunk = enemyShips.ship.every((ele) => ele.ship.isSunk());
+
+        if (allSunk === true) {
+          reset();
+          displayHome();
+        }
+
         const attack = document.querySelector(".attack-btn");
-        console.log(e.currentTarget);
         const nextTurn = document.querySelector(".next-turn");
         nextTurn.addEventListener("click", nextTurnHandler);
         attack.removeEventListener("click", attackBtnHandler);
