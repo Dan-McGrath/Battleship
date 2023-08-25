@@ -8,7 +8,8 @@ const gameboard = () => {
         const square = {
           cord: [],
           isOccupied: false,
-          isAttacked: false
+          isAttacked: false,
+          isMissed: false
         };
         square.cord[0] = i;
         square.cord[1] = j;
