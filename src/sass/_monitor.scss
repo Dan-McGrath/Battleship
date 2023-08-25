@@ -94,3 +94,7 @@
 .square[data-is-attacked="true"] {
   background-color: red;
 }
+
+.square[data-is-missed="true"] {
+  background-color: black;
+}
