@@ -155,7 +155,7 @@ const DomManager = () => {
         player.attack(cordinatSelected.cord);
 
         const missed = enemyPlayer.gameboardObject.getMissedAttacks();
-        console.log(missed);
+
         missed.forEach((ele) => {
           if (
             JSON.stringify(gameboardToAttack[i].cord) === JSON.stringify(ele)
@@ -167,17 +167,15 @@ const DomManager = () => {
         reset();
         displayGame();
 
-        const allSunk = enemyShips.ship.every((ele) => ele.ship.isSunk());
-
-        if (allSunk === true) {
-          reset();
-          displayHome();
-        }
-
         const attack = document.querySelector(".attack-btn");
         const nextTurn = document.querySelector(".next-turn");
         nextTurn.addEventListener("click", nextTurnHandler);
         attack.removeEventListener("click", attackBtnHandler);
+
+        if (enemyPlayer.gameboardObject.getShipLocations().length === 0) {
+          reset();
+          displayHome();
+        }
       }
     }
   };
