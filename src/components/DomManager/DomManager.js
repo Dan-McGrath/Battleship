@@ -121,11 +121,27 @@ const DomManager = () => {
     });
   };
 
+  const nextTurnHandler = () => {
+    reset();
+    player = GameManager.changeCurrentPlayer();
+    displayGame();
+  };
+
+  const nextTurnBtn = () => {
+    const sideBtnDiv = document.querySelector(".side-btns");
+    const nextTurn = document.createElement("button");
+    nextTurn.classList.add("next-turn");
+    nextTurn.textContent = "End Turn";
+
+    sideBtnDiv.appendChild(nextTurn);
+  };
+
   const attackBtnHandler = (e) => {
     const square = document.querySelectorAll(".square");
     const gameboardToAttack = player.blankGameboard;
     const enemyPlayer = GameManager.getEnemyPlayer();
     const enemyBoardToAttack = GameManager.getEnemyPlayer().playersGameboard;
+    const playersBoard = player.playersGameboard;
     let cordinatSelected;
     for (let i = 0; i < gameboardToAttack.length; i++) {
       if (
@@ -135,9 +151,25 @@ const DomManager = () => {
         cordinatSelected = gameboardToAttack[i];
         enemyPlayer.gameboardObject.receiveAttack(enemyBoardToAttack[i].cord);
         player.attack(cordinatSelected.cord);
-        player = GameManager.changeCurrentPlayer();
+
+        const missed = enemyPlayer.gameboardObject.getMissedAttacks();
+
+        missed.forEach((ele) => {
+          if (
+            JSON.stringify(gameboardToAttack[i].cord) === JSON.stringify(ele)
+          ) {
+            gameboardToAttack[i].isMissed = true;
+          }
+        });
+
         reset();
         displayGame();
+
+        const attack = document.querySelector(".attack-btn");
+        console.log(e.currentTarget);
+        const nextTurn = document.querySelector(".next-turn");
+        nextTurn.addEventListener("click", nextTurnHandler);
+        attack.removeEventListener("click", attackBtnHandler);
       }
     }
   };
@@ -150,7 +182,6 @@ const DomManager = () => {
     sideBtnDiv.appendChild(attackBtn);
   };
 
-  const currentPlayersTurn = () => {};
   const displayGame = () => {
     displayHeader();
     displayTitle();
@@ -159,6 +190,7 @@ const DomManager = () => {
     displayPlayerShips();
     createSidebtnsDiv();
     getAttackBtn();
+    nextTurnBtn();
 
     const attack = document.querySelector(".attack-btn");
     attack.addEventListener("click", attackBtnHandler);
@@ -239,6 +271,7 @@ const DomManager = () => {
       squareDiv.dataset.index = blankBoard.indexOf(ele);
       squareDiv.dataset.isAttacked = square.isAttacked;
       squareDiv.dataset.isOccupied = square.isOccupied;
+      squareDiv.dataset.isMissed = square.isMissed;
       squareDiv.dataset.active = "false";
 
       gameboardDiv.appendChild(squareDiv);
