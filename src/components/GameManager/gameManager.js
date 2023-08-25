@@ -21,8 +21,8 @@ const gameManager = () => {
       enemyPlayer = player1;
       return currentPlayer;
     }
-    currentPlayer = player2;
-    enemyPlayer = player1;
+    currentPlayer = player1;
+    enemyPlayer = player2;
     return currentPlayer;
   };
 
