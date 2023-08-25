@@ -134,12 +134,8 @@ const DomManager = () => {
       ) {
         cordinatSelected = gameboardToAttack[i];
         enemyPlayer.gameboardObject.receiveAttack(enemyBoardToAttack[i].cord);
-        console.log(enemyBoardToAttack[i].cord);
         player.attack(cordinatSelected.cord);
-        console.log(enemyBoardToAttack);
-        console.log(
-          GameManager.getEnemyPlayer().gameboardObject.getMissedAttacks()
-        );
+        player = GameManager.changeCurrentPlayer();
         reset();
         displayGame();
       }
@@ -186,9 +182,9 @@ const DomManager = () => {
         currentPlayerPickShipLocation();
       } else {
         reset();
+        player = GameManager.changeCurrentPlayer();
         displayGame();
       }
-      player = GameManager.changeCurrentPlayer();
     }
   };
 
