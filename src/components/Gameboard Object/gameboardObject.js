@@ -108,10 +108,10 @@ const gameboard = () => {
 
   const placeShipVerticalyUp = (cordinate, newShip) => {
     const shipLength = newShip.getLength();
-    let cordinateToChange = cordinate[0];
+
     const newCordinates = [];
     for (let i = shipLength - 1; i >= 0; i--) {
-      cordinateToChange = cordinate[0];
+      let cordinateToChange = cordinate[0];
       cordinateToChange -= i;
       const newCordinate = [cordinateToChange, cordinate[1]];
       newCordinates.push(newCordinate);
@@ -140,15 +140,31 @@ const gameboard = () => {
 
   const placeShip = (direction, newShip, shipCordinate) => {
     const placement = direction(shipCordinate, newShip);
+
     if (placement === false) {
       alert("Ship Can not be placed");
     }
     let cordinate;
+
     for (let i = 0; i < placement.length; i++) {
       cordinate = placement[i];
       setOccupied(cordinate);
     }
+
     return placement;
+  };
+
+  const missedAttack = [];
+
+  const getMissedAttacks = () => missedAttack;
+
+  const checkIfMissed = (cordinateIndex) => {
+    const missedSquare = getSquare(cordinateIndex);
+    console.log(missedSquare);
+    if (gameboardArr[missedSquare].isOccupied === false) {
+      missedAttack.push(gameboardArr[missedSquare].cord);
+    }
+    return false;
   };
 
   const shipLocatedAtAttack = (cordinate) => {
@@ -162,22 +178,19 @@ const gameboard = () => {
             shipLocations[i].shipCordinates[j]
           );
           const ship = shipLocations[i].shipObject;
+
           shipLocations[i].shipCordinates.splice(index, 1);
 
           if (shipLocations[i].shipCordinates.length === 0) {
             shipLocations.splice(i, 1);
             break;
           }
-          return ship;
+          ship.ship.hit();
         }
       }
     }
     return false;
   };
-
-  const missedAttack = [];
-
-  const getMissedAttacks = () => missedAttack;
 
   const receiveAttack = (cordinate) => {
     const squareIndex = getSquare(cordinate);
@@ -188,12 +201,8 @@ const gameboard = () => {
     }
 
     square.isAttacked = true;
-    const isShipAtCordinate = shipLocatedAtAttack(cordinate);
-    if (isShipAtCordinate === false) {
-      missedAttack.push(cordinate);
-      return getMissedAttacks();
-    }
-    return getMissedAttacks();
+    shipLocatedAtAttack(cordinate);
+    return true;
   };
 
   const allShipsSunk = () => {
@@ -216,7 +225,9 @@ const gameboard = () => {
     addShipLocation,
     receiveAttack,
     allShipsSunk,
-    getMissedAttacks
+    getMissedAttacks,
+    shipLocatedAtAttack,
+    checkIfMissed
   };
 };
 
